@@ -1,0 +1,54 @@
+import os
+import argparse
+
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('--d', action="append")
+parser.add_argument('--dryrun', action='store_true')
+
+
+args = parser.parse_args()
+print(args)
+
+
+found = {}
+known_paths = {}
+
+
+def remove_a_file(path0, path1, filename, userinput):
+    chosen_file = os.path.join(path0, filename) if userinput == "0" else os.path.join(path1, filename)
+    try:
+        if not args.dryrun:
+            os.remove(chosen_file)
+    except EnvironmentError as e:
+        print("could not remove %s"%chosen_file)
+
+
+for path in args.d:
+    for dirpath, dirnames, files in os.walk(path):
+        for name in files:
+            size = os.path.getsize(os.path.join(dirpath, name))
+            if (name, size) in found:
+                
+                print(name, size, found[(name, size)], dirpath)
+                if (found[(name, size)], dirpath) in known_paths:
+                    choice = known_paths[(found[(name, size)], dirpath)]
+                    remove_a_file(path0=found[(name, size)], path1=dirpath, filename=name, userinput=choice)
+                    if choice == '0':
+                        found[(name, size)] = dirpath
+                else:
+                    userinput = ""
+                    while userinput not in ['0', '1', '2']:
+                        print("enter 0 to delete %s" % os.path.join(found[(name, size)], name ))
+                        print("enter 1 to delete %s" % os.path.join(dirpath, name ))
+                        userinput = input("your choice (2 to skip): ")
+                    if userinput == '2':
+                        continue
+                    known_paths[ (found[(name, size)], dirpath)] = userinput
+                    remove_a_file(path0=found[(name, size)], path1=dirpath, filename=name, userinput=userinput)
+                    if userinput == '0':
+                        found[(name, size)] = dirpath
+
+            else:
+                found[(name, size)] = dirpath
+
