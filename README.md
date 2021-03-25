@@ -27,7 +27,7 @@ In this case `finddupes_in_dir.py` is the best solution. You can use `--d`and `-
 Use `finddupes_in_same_folder.py`. You have the option of recursing into subdirectories but it will never look outside of the current directory for duplicates.
 
 
-## I want to automatically delete duplicates according to previous choices based on the directories the dupicates were present in
+## I want to automatically delete duplicates according to previous choices based on the directories the duplicates were present in
 
 Imagine you have the following directory structure.
 
