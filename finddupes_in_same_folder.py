@@ -7,7 +7,7 @@ import hashlib
 
 description = """
 Look for duplicate files in a single folder - traverses entire directory
-hierarchy. Candidates are files with the same size and 'ctime' (see python) but
+hierarchy. Candidates are files are first found by size and the by hash but
 will not be deleted unless the files are an exact match. User will be prompted 
 to choose a file to keep unless '--auto' option is used. '--auto' option will 
 delete the file with the shortest name or the first file found. It is not 
@@ -15,7 +15,7 @@ reccomended to run this utility in directories containing software distributions
 or code as such folders often contain necessary duplicates.
 """
 parser = argparse.ArgumentParser(description='Process some integers.')
-parser.add_argument('--d', action="append", help="a directory to look in, multiple instances accepted")
+parser.add_argument('--d', required=True, action="append", help="a directory to look in, multiple instances accepted")
 parser.add_argument('--dryrun', action='store_true', help="do a dry run, do not perform any deletions")
 parser.add_argument('--auto', action='store_true', help="do not prompt user to choose file")
 parser.add_argument('--force', action='store_true', help="do not ask for confirmation to proceed when not dry runs")
