@@ -66,7 +66,7 @@ for path in args.d:
                     print(other_file, '|', file_path)
                     other_dir = os.path.dirname(other_file)
                     
-                    if filecmp.cmp(path0, path1, shallow=False):
+                    if filecmp.cmp(other_file, file_path, shallow=False):
                         if (other_dir, dirpath) in known_paths:
                             print('using known paths...')
                             choice = known_paths[(other_dir, dirpath)]
