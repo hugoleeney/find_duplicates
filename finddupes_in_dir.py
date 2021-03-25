@@ -36,6 +36,7 @@ class DupeFinder():
 
     def __init__(self):
         self.found = {}
+        self.sizes_done = set()
         self.hashes = {}
 
     def add_file(self, file_path):
@@ -44,10 +45,12 @@ class DupeFinder():
 
     def prep_size(self, size):
         if size in self.found:
-            size_matches = self.found.get(size)
-            for match in size_matches:
-                hash = get_file_md5(match)
-                self.hashes.setdefault(hash, []).append(match)
+            if size not in self.sizes_done:
+                size_matches = self.found.get(size)
+                for match in size_matches:
+                    hash = get_file_md5(match)
+                    self.hashes.setdefault(hash, []).append(match)
+                self.sizes_done.add(size)
             return True
         else:
             return False
