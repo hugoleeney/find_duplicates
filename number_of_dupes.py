@@ -27,13 +27,15 @@ found = {}
 hashes = {}
 
 
+# count the number of files
 for path in args.d:
     for dirpath, dirnames, files in os.walk(path):
         for name in files:
             number_of_files += 1
-
 print("number of files: %s" % number_of_files)
 
+
+# build the dupes structure
 num_processed = 1
 for path in args.d:
     for dirpath, dirnames, files in os.walk(path):
@@ -57,6 +59,7 @@ for path in args.d:
                 found.setdefault(criteria, []).append(filepath)
 
 
+# sum the dupes and sizes and print if required
 number_of_dupes = 0
 size_of_dupes = 0
 if args.show_dupes:
@@ -71,5 +74,7 @@ else:
     for filehash, paths in hashes.items():
         number_of_dupes += len(paths)-1
 
+
+# print final stats
 print("number of dupes found: %s" % number_of_dupes)
 print("estimate size of dupes: %s" % size_of_dupes)
