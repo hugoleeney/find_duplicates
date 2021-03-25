@@ -7,7 +7,7 @@ import hashlib
 
 description = """
 Look for duplicate files in a single folder - traverses entire directory
-hierarchy. Candidates are files are first found by size and the by hash but
+hierarchy. Candidates files are first found by size and the by hash but
 will not be deleted unless the files are an exact match. User will be prompted 
 to choose a file to keep unless '--auto' option is used. '--auto' option will 
 delete the file with the shortest name or the first file found. It is not 
