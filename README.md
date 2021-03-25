@@ -63,3 +63,8 @@ TODO - save a session so that detective work doesn't have to be done again.
 - length of path -TODO
 - length of filename - TODO
 - order found - TODO
+
+
+# TODO
+
+- allow user to move files to another directory instead of deleting
