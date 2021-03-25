@@ -1,3 +1,10 @@
+# General Information
+
+- not production ready
+- developed with Python 3.8.5
+    - on Ubuntu WSL2 with pyenv, pyenv-virtualenv
+- original use case was removing 500MB of duplicate photos and videos from a 800MB archive
+
 # Which file should I use?
 
 
