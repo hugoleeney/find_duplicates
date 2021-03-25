@@ -21,6 +21,7 @@ parser.add_argument('--d', required=True, action="append", help="a directory to 
 parser.add_argument('--dryrun', action='store_true', help="do a dry run, do not perform any deletions")
 parser.add_argument('--auto', action='store_true', help="do not prompt user to choose file")
 parser.add_argument('--force', action='store_true', help="do not ask for confirmation to proceed when not dry runs")
+parser.add_arguemnt('--dont_recurse', action='store_true', help='do not recurse into sub directories')
 args = parser.parse_args()
 print(args)
 
@@ -46,7 +47,7 @@ def get_user_input(allowed_responses, break_response, message):
     userinput = ''
     while userinput not in allowed_responses:
         try:
-            userinput = input()
+            userinput = input(message)
             if userinput == break_response:
                 break
             userinput = int(userinput)
@@ -110,6 +111,9 @@ for path in args.d:
                     for i, f in enumerate(files):
                         if i != userinput:
                             number_of_dupes_deleted += delete_dupe(f, files[userinput], args)
+
+        if args.dont_recurse:
+            break
 
 
 print("number of dupes deleted: %s %s" % (number_of_dupes_deleted, "(dry run)" if args.dryrun else ""))
