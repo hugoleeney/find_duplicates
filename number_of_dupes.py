@@ -5,7 +5,7 @@ import hashlib
 
 
 description = """
-Finds duplicate files and reprts the total number in the specified directories.
+Finds duplicate files and reports the total number in the specified directories.
 """
 parser = argparse.ArgumentParser(description=description )
 parser.add_argument('--d', required=True, action="append", help="directories where to look for dupes")
