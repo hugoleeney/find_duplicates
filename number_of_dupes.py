@@ -58,6 +58,7 @@ for path in args.d:
                     first_hash = get_file_md5(found[criteria][0])
                     hashes.setdefault(first_hash, []).append(found[criteria][0])
                 file_hash = get_file_md5(filepath)
+                found[criteria].append(filepath)
                 hashes.setdefault(file_hash, []).append(filepath)
             else:
                 found.setdefault(criteria, []).append(filepath)
