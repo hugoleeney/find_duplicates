@@ -33,9 +33,9 @@ def remove_a_file(path0, path1, filename, userinput):
                 os.remove(chosen_file)
         else:
             print('Files are not equal. Aborting delete..')
-    except EnvironmentError as e:
+    except FileNotFoundError:
         print("could not remove %s"%chosen_file)
-    except FileNotFoundError as fnfe:
+    except EnvironmentError:
         print("could not remove %s"%chosen_file)
 
 
