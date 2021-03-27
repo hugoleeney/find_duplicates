@@ -8,10 +8,11 @@ Search provided directories. Find first by matching on size and then
 by hash. For found dupes prompt the user to select a file to keep. 
 Remember the choice if other dupes in same directories are found.
 """
-parser = argparse.ArgumentParser(description='description')
+parser = argparse.ArgumentParser(description=description)
 parser.add_argument('--d', required=True, action="append")
 parser.add_argument('--dryrun', action='store_true')
 parser.add_argument('--force', action='store_true')
+parser.add_argument('--ignore_zero_size', action='store_true', help='ignore files with zero size')
 args = parser.parse_args()
 
 
@@ -34,9 +35,9 @@ def remove_a_file(path0, path1, userinput):
     try:
         if not args.dryrun:
             os.remove(chosen_file)
-    except EnvironmentError as e:
+    except FileNotFoundError:
         print("ERROR could not remove %s"%chosen_file)
-    except FileNotFoundError as fnfe:
+    except EnvironmentError:
         print("ERROR could not remove %s"%chosen_file)
 
 
@@ -89,5 +90,6 @@ for path in args.d:
                     else:
                         print("files not same, aborting delete")
             else:
-                found[criteria] = [file_path, False]
+                if args.ignore_zero_size and criteria != 0:
+                    found[criteria] = [file_path, False]
 
