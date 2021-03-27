@@ -47,7 +47,11 @@ for path in args.d:
                 num_processed += 1
 
             filepath = os.path.join(dirpath, name)
-            size = os.path.getsize(filepath)
+            try:
+                size = os.path.getsize(filepath)
+            except FileNotFoundError as fnfe:
+                print('file not found %s'%filepath)
+                continue
             criteria = size
             if criteria in found:
                 if len(found[criteria]) == 1:
@@ -66,7 +70,11 @@ if args.show_dupes:
     for filehash, paths in hashes.items():
         number_of_dupes += len(paths)-1
         if len(paths) > 1:
-            size_of_dupes += (os.path.getsize(paths[0])*(len(paths)-1))
+            try:
+                size_of_dupes += (os.path.getsize(paths[0])*(len(paths)-1))
+            except FileNotFoundError as fnfe:
+                print('file not found %s'%paths[0])
+                continue
             print('--------------------------------')
             for p in paths:
                 print(p)
