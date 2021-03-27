@@ -73,7 +73,7 @@ for path in args.d:
                             choice = known_paths[(other_dir, dirpath)]
                             remove_a_file(other_file, file_path, choice)
                             if choice == '0':
-                                hashes[file_hash] = dirpath
+                                hashes[file_hash] = file_path
                         else:
                             userinput = ""
                             while userinput not in ['0', '1', '2']:
