@@ -9,19 +9,20 @@ import hashlib
 
 description = """
 Look for duplicate files in a single folder - traverses entire directory
-hierarchy. Candidates files are first found by size and then by hash but
+hierarchy. Candidates files are first found by size and then by hash. Files
+with 0 size are not considered. Files
 will not be deleted unless the files are an exact match. User will be prompted 
 to choose a file to keep unless '--auto' option is used. '--auto' option will 
 delete the file with the shortest name or the first file found. It is not 
 reccomended to run this utility in directories containing software distributions
 or code as such folders often contain necessary duplicates.
 """
-parser = argparse.ArgumentParser(description='Process some integers.')
+parser = argparse.ArgumentParser(description=description)
 parser.add_argument('--d', required=True, action="append", help="a directory to look in, multiple instances accepted")
 parser.add_argument('--dryrun', action='store_true', help="do a dry run, do not perform any deletions")
 parser.add_argument('--auto', action='store_true', help="do not prompt user to choose file")
 parser.add_argument('--force', action='store_true', help="do not ask for confirmation to proceed when not dry runs")
-parser.add_arguemnt('--dont_recurse', action='store_true', help='do not recurse into sub directories')
+parser.add_argument('--dont_recurse', action='store_true', help='do not recurse into sub directories')
 args = parser.parse_args()
 print(args)
 
@@ -51,7 +52,7 @@ def get_user_input(allowed_responses, break_response, message):
             if userinput == break_response:
                 break
             userinput = int(userinput)
-        except ValueError as e:
+        except ValueError:
             print("enter value between 0 and %s"%len(files))
     return userinput
 
@@ -72,8 +73,9 @@ for path in args.d:
         foundcandidates = {}
         for name in files:
             size = os.path.getsize(os.path.join(dirpath, name))
-            criteria = size
-            foundcandidates.setdefault(criteria, []).append(os.path.join(dirpath, name))
+            if size != 0:
+                criteria = size
+                foundcandidates.setdefault(criteria, []).append(os.path.join(dirpath, name))
         
         # process candidates by md5 hash
         found = {}
