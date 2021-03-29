@@ -1,5 +1,7 @@
 # General Information
 
+- a collection of stand-alone scripts (no install or environment setup required; just copy paste any one script)
+    - accordingly there is code duplication in this repo
 - not production ready
 - developed with Python 3.8.5
     - on Ubuntu WSL2 with pyenv, pyenv-virtualenv
