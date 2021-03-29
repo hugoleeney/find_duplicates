@@ -61,11 +61,6 @@ There are 2 scripts that will do this for you.
 
 TODOs 
 
-- allow user to pick many files to keep.
-- save a session so that detective work doesn't have to be done again.
-    - allow offline session annotation to delete files
-
-
 ## I want to automatically delete duplicates based on ...
 
 - created time - TODO
@@ -78,3 +73,18 @@ TODOs
 # General TODO
 
 - allow user to move files to another directory instead of deleting
+- allow user to pick many files to keep.
+- save a session so that detective work doesn't have to be done again.
+    - allow offline session annotation to delete files
+
+
+# Empty Directories
+
+Once you are finished deleting dupes you might be left with a number of empty directories. There are suitable system
+commands for finding and deleting these.
+
+```
+find ./ -type d -empty
+
+find ./ -type d -empty -delete
+```
