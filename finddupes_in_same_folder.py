@@ -5,6 +5,7 @@ import argparse
 import pathlib
 import filecmp
 import hashlib
+from uwalk import uwalk
 
 
 description = """
@@ -23,13 +24,18 @@ parser.add_argument('--dryrun', action='store_true', help="do a dry run, do not 
 parser.add_argument('--auto', action='store_true', help="do not prompt user to choose file")
 parser.add_argument('--force', action='store_true', help="do not ask for confirmation to proceed when not dry runs")
 parser.add_argument('--dont_recurse', action='store_true', help='do not recurse into sub directories')
+parser.add_argument('-n', '--dont_explore_names', action="append", default=[], help="directory names not to descend into")
+parser.add_argument('-p', '--dont_explore_paths', action="append", default=[], help="directory paths not to descend into")
+parser.add_argument('-s', '--start_at', help="a directory where to start looking, if not found no files will be processed (n.b --dont_explore_paths)", default=None)
 args = parser.parse_args()
-print(args)
+
 
 if not args.dryrun and not args.force:
-    user_continue = input("WARNING this is not a dry run. Any dupes found will be delete. Enter '1' now to exit.")
+    user_continue = input("WARNING this is not a dry run. Any dupes found will be deleted. Enter '1' now to exit.")
     if user_continue == '1':
         exit()
+args.dont_explore_paths = [os.path.normpath(x) for x in args.dont_explore_paths]
+args.start_at = os.path.normpath(args.start_at)
 
 
 def delete_dupe(f, to_keep, args):
@@ -61,13 +67,13 @@ def print_files(criteria, files):
     print('---------------------------------------------')
     print('criteria: %s'%str(criteria))
     for i, f in enumerate(files):
-        print(i, f)
+        print(i+1, f)
 
 
 number_of_dupes_deleted = 0
 
 for path in args.d:
-    for dirpath, dirnames, files in os.walk(path):
+    for dirpath, dirnames, files in uwalk(path, start_at=args.start_at, dont_explore_names=args.dont_explore_names, dont_explore_paths=args.dont_explore_paths):
 
         # find candidates just be size first
         foundcandidates = {}
@@ -107,12 +113,12 @@ for path in args.d:
                             number_of_dupes_deleted += delete_dupe(f, to_keep, args)
 
                 else:
-                    userinput = get_user_input(list(range(len(files))), 's', "Enter number of file you want to keep (s to skip). We'll double check the files are exactly the same before deleting: ")
-                    if userinput == 's':
+                    userinput = get_user_input(list(range(1, len(files)+1)), 'e', "Enter number of file you want to keep ('e' to skip). We'll double check the files are exactly the same before deleting: ")
+                    if userinput == 'e':
                         continue
                     for i, f in enumerate(files):
-                        if i != userinput:
-                            number_of_dupes_deleted += delete_dupe(f, files[userinput], args)
+                        if i+1 != userinput:
+                            number_of_dupes_deleted += delete_dupe(f, files[userinput-1], args)
 
         if args.dont_recurse:
             break
