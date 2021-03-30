@@ -6,13 +6,19 @@ import sys
 from uwalk import uwalk
 
 
+description = """
+Search provided directories looking for dupes. Match first on size, confirm with
+a full file comparison. Prompt user to choose one file or the other.
+"""
+
+
 def main(args):
     
     if not args.dryrun and not args.force:
         user_continue = input("WARNING this is not a dry run. Any dupes found will be deleted. Enter '1' to quit now.")
         if user_continue == '1':
             exit()
-    else:
+    if args.dryrun:
         print("DRY RUN")
 
     found = {}
@@ -48,12 +54,6 @@ def main(args):
                         found[criteria] = os.path.join(dirpath, name)
 
 
-description = """
-Search provided directories looking for dupes. Match first on size, confirm with
-a full file comparison. Prompt user to choose one file or the other.
-"""
-
-
 def call(source, arguments):
     parser = argparse.ArgumentParser(prog=source, description=description)
     parser.add_argument('--d', required=True, action="append", help="directory where to look for dupes")
@@ -68,5 +68,4 @@ def call(source, arguments):
 
 
 if __name__ == "__main__":
-    print(sys.argv)
     call(sys.argv[0], sys.argv[1:])

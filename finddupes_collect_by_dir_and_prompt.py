@@ -4,6 +4,7 @@ import os
 import argparse
 import filecmp
 import hashlib
+import sys
 from collections import deque
 
 from uwalk import uwalk
@@ -34,6 +35,9 @@ def main(args):
         user_continue = input("WARNING this is not a dry run. If dupes are found they will be deleted. Enter '1' to quit now.")
         if user_continue == '1':
             exit()
+    if args.dryrun:
+        print('DRY RUN')
+
     args.dont_explore_paths = [os.path.normpath(x) for x in args.dont_explore_paths]
 
     found = {} # holds [file path, <bool>] where the bool indicates if path in hashes
@@ -125,5 +129,4 @@ def call(source, arguments):
 
 
 if __name__ == "__main__":
-    print(sys.argv)
     call(sys.argv[0], sys.argv[1:])

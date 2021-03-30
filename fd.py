@@ -2,18 +2,34 @@
 import argparse
 import sys
 from collections import namedtuple
-import finddupes
+
 import build_file_hashes
+import find_all_dupes_then_prompt
 import finddupes_collect_by_dir_and_prompt
+import finddupes_in_dir
+import finddupes_in_same_folder
+import finddupes_prompt_by_dir_and_match_name
+import finddupes_prompt_by_dir
+import finddupes
+import number_of_dupes_by_size_only
+import number_of_dupes
+
 
 if __name__ == "__main__":
 
-    description = "interface to run find dupes sub-commands"
+    description = "Interface to run find dupes sub-commands. Run any sub-command with '-h' for more info."
 
     commands = {
-        'finddupes': finddupes.call,
         'build_hashdir': build_file_hashes.call,
-        'collectbydir': finddupes_collect_by_dir_and_prompt.call
+        'find_all_then_prompt': find_all_dupes_then_prompt.call,
+        'collect_by_dir': finddupes_collect_by_dir_and_prompt.call,
+        'find_in_dir': finddupes_in_dir.call,
+        'find_in_same_folder': finddupes_in_same_folder.call,
+        'find_match_name_prompt_pairwise_by_dir': finddupes_prompt_by_dir_and_match_name.call,
+        'find_prompt_pairwise_by_dir': finddupes_prompt_by_dir.call,
+        'finddupes': finddupes.call,
+        'report_size_dupes': number_of_dupes_by_size_only.call,
+        'report_dupes': number_of_dupes.call
     }
 
     parser = argparse.ArgumentParser(description=description, add_help=False)

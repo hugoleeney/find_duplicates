@@ -6,6 +6,8 @@ import argparse
 import pathlib
 import filecmp
 import hashlib
+import sys
+
 from uwalk import uwalk
 
 
@@ -54,6 +56,4 @@ def call(source, arguments):
 
 
 if __name__ == "__main__":
-    import sys
-    print(sys.argv)
     call(sys.argv[0], sys.argv[1:])

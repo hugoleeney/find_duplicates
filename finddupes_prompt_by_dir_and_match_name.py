@@ -1,6 +1,7 @@
 import os
 import argparse
 import filecmp
+import sys
 
 
 description = """
@@ -8,28 +9,12 @@ Search provided directories. When a dupe is found (name and size match) the user
 in same directories are found to be the same
 """
 
-parser = argparse.ArgumentParser(description='description')
-parser.add_argument('--d', required=True, action="append")
-parser.add_argument('--dryrun', action='store_true')
-parser.add_argument('--force', action='store_true')
 
-args = parser.parse_args()
-print(args)
-
-if not args.dryrun and not args.force:
-    user_continue = input("WARNING this is not a dry run. If dupes are found they will be deleted. Enter '1' to quit now.")
-    if user_continue == '1':
-        exit()
-
-found = {}
-known_paths = {}
-
-
-def remove_a_file(path0, path1, filename, userinput):
+def remove_a_file(path0, path1, filename, userinput, dryrun):
     chosen_file = os.path.join(path0, filename) if userinput == "0" else os.path.join(path1, filename)
     try:
         if filecmp.cmp(os.path.join(path0, filename), os.path.join(path1, filename), shallow=False):
-            if not args.dryrun:
+            if not dryrun:
                 os.remove(chosen_file)
         else:
             print('Files are not equal. Aborting delete..')
@@ -39,33 +24,57 @@ def remove_a_file(path0, path1, filename, userinput):
         print("could not remove %s"%chosen_file)
 
 
-for path in args.d:
-    for dirpath, dirnames, files in os.walk(path):
-        for name in files:
-            size = os.path.getsize(os.path.join(dirpath, name))
-            if (name, size) in found:
-                
-                print(name, size, found[(name, size)], dirpath)
-                if (found[(name, size)], dirpath) in known_paths:
-                    choice = known_paths[(found[(name, size)], dirpath)]
-                    remove_a_file(path0=found[(name, size)], path1=dirpath, filename=name, userinput=choice)
-                    if choice == '0':
-                        found[(name, size)] = dirpath
-                else:
-                    if filecmp.cmp( os.path.join(found[(name, size)], name), os.path.join(dirpath, name), shallow=False):
+def main(args):
 
-                        userinput = ""
-                        while userinput not in ['0', '1', '2']:
-                            print("enter 0 to delete %s" % os.path.join(found[(name, size)], name ))
-                            print("enter 1 to delete %s" % os.path.join(dirpath, name ))
-                            userinput = input("your choice (2 to skip): ")
-                        if userinput == '2':
-                            continue
-                        known_paths[ (found[(name, size)], dirpath)] = userinput
-                        remove_a_file(path0=found[(name, size)], path1=dirpath, filename=name, userinput=userinput)
-                        if userinput == '0':
+    if not args.dryrun and not args.force:
+        user_continue = input("WARNING this is not a dry run. If dupes are found they will be deleted. Enter '1' to quit now.")
+        if user_continue == '1':
+            exit()
+    if args.dryrun:
+        print('DRY RUN')
+
+    found = {}
+    known_paths = {}
+
+    for path in args.d:
+        for dirpath, dirnames, files in os.walk(path):
+            for name in files:
+                size = os.path.getsize(os.path.join(dirpath, name))
+                if (name, size) in found:
+                    
+                    print(name, size, found[(name, size)], dirpath)
+                    if (found[(name, size)], dirpath) in known_paths:
+                        choice = known_paths[(found[(name, size)], dirpath)]
+                        remove_a_file(path0=found[(name, size)], path1=dirpath, filename=name, userinput=choice, dryrun=args.dryrun)
+                        if choice == '0':
                             found[(name, size)] = dirpath
+                    else:
+                        if filecmp.cmp( os.path.join(found[(name, size)], name), os.path.join(dirpath, name), shallow=False):
 
-            else:
-                found[(name, size)] = dirpath
+                            userinput = ""
+                            while userinput not in ['0', '1', '2']:
+                                print("enter 0 to delete %s" % os.path.join(found[(name, size)], name ))
+                                print("enter 1 to delete %s" % os.path.join(dirpath, name ))
+                                userinput = input("your choice (2 to skip): ")
+                            if userinput == '2':
+                                continue
+                            known_paths[ (found[(name, size)], dirpath)] = userinput
+                            remove_a_file(path0=found[(name, size)], path1=dirpath, filename=name, userinput=userinput, dryrun=args.dryrun)
+                            if userinput == '0':
+                                found[(name, size)] = dirpath
 
+                else:
+                    found[(name, size)] = dirpath
+
+
+def call(source, arguments):
+    parser = argparse.ArgumentParser(prog=source, description=description) 
+    parser.add_argument('--d', required=True, action="append")
+    parser.add_argument('--dryrun', action='store_true')
+    parser.add_argument('--force', action='store_true')
+    args = parser.parse_args(arguments)
+    main(args)
+
+
+if __name__ == "__main__":
+    call(sys.argv[0], sys.argv[1:])
