@@ -1,20 +1,29 @@
 #!/usr/bin/env python3
 import argparse
 import sys
-
+from collections import namedtuple
 import finddupes
+import build_file_hashes
 
 
 if __name__ == "__main__":
-    description = ""
-    parser = argparse.ArgumentParser(description=description )
-    subparsers = parser.add_subparsers(help='sub-command help', dest='command')
 
-    parser_finddupes = subparsers.add_parser('finddupes', help=finddupes.description)
-    finddupes.add_arguments(parser_finddupes)
-    parser_finddupes.set_defaults(func=finddupes.main)
-    
-    args = parser.parse_args()
+    description = "interface to run find dupes sub-commands"
 
-    print(args.command)
-    args.func(args)
+    commands = {
+        'finddupes': finddupes.call,
+        'build_hashdir': build_file_hashes.call
+    }
+
+    parser = argparse.ArgumentParser(description=description, add_help=False)
+    parser.add_argument('command', help="sub-command you want to run from choice of %s."%", ".join(commands.keys()))
+    parser.add_argument('-h', '--help', help='get help')
+    # only display help for this script if it is the first argument
+    if len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help']:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+    args, unknown = parser.parse_known_args()
+
+
+    func = commands[args.command]
+    func("%s %s" % (parser.prog, args.command), unknown)

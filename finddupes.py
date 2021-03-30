@@ -64,14 +64,20 @@ def add_arguments(parser):
     parser.add_argument('-s', '--start_at', help="a directory where to start looking, if not found no files will be processed (n.b --dont_explore_paths)", default=None)
 
 
-def call(parser, arguments=None, source=None):
-    # parser = argparse.ArgumentParser(prog=source, description=description) if source else argparse.ArgumentParser(description=description)
-    args = parser.parse_args(arguments) if arguments else parser.parse_args()
+def call(source, arguments):
+    parser = argparse.ArgumentParser(prog=source, description=description)
+    parser.add_argument('--d', required=True, action="append", help="directory where to look for dupes")
+    parser.add_argument('--dryrun', action='store_true', help="go through the motions but don't delete anything")
+    parser.add_argument('--force', action='store_true', help="if not a dry run don't prompt")
+    parser.add_argument('-n', '--dont_explore_names', action='append', help='directory names not to explore e.g. .git', default=[])
+    parser.add_argument('-p', '--dont_explore_paths', action='append', help='directory paths not to explore e.g. .git', default=[])
+    parser.add_argument('-i', '--ignore_zero_size', action='store_true', help='ignore any file with zero size')
+    parser.add_argument('-s', '--start_at', help="a directory where to start looking, if not found no files will be processed (n.b --dont_explore_paths)", default=None)
+    args = parser.parse_args(arguments)
     main(args)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=description)
-    add_arguments(parser)
-    args = parser.parse_args()
-    main(args)
+    import sys
+    print(sys.argv)
+    call(sys.argv[0], sys.argv[1:])
