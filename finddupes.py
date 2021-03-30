@@ -47,12 +47,14 @@ def main(args):
                         found[criteria] = os.path.join(dirpath, name)
 
 
-def call(arguments=None):
-    description = """
-    Search provided directories looking for dupes. Match first on size, confirm with
-    a full file comparison. Prompt user to choose one file or the other.
-    """
-    parser = argparse.ArgumentParser(description=description )
+
+description = """
+Search provided directories looking for dupes. Match first on size, confirm with
+a full file comparison. Prompt user to choose one file or the other.
+"""
+
+
+def add_arguments(parser):
     parser.add_argument('--d', required=True, action="append", help="directory where to look for dupes")
     parser.add_argument('--dryrun', action='store_true', help="go through the motions but don't delete anything")
     parser.add_argument('--force', action='store_true', help="if not a dry run don't prompt")
@@ -60,10 +62,16 @@ def call(arguments=None):
     parser.add_argument('-p', '--dont_explore_paths', action='append', help='directory paths not to explore e.g. .git', default=[])
     parser.add_argument('-i', '--ignore_zero_size', action='store_true', help='ignore any file with zero size')
     parser.add_argument('-s', '--start_at', help="a directory where to start looking, if not found no files will be processed (n.b --dont_explore_paths)", default=None)
-    args = parser.parse_args(arguments) if arguments else parser.parse_args()
 
+
+def call(parser, arguments=None, source=None):
+    # parser = argparse.ArgumentParser(prog=source, description=description) if source else argparse.ArgumentParser(description=description)
+    args = parser.parse_args(arguments) if arguments else parser.parse_args()
     main(args)
 
 
 if __name__ == "__main__":
-    call()
+    parser = argparse.ArgumentParser(description=description)
+    add_arguments(parser)
+    args = parser.parse_args()
+    main(args)
