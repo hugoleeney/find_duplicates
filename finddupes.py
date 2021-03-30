@@ -1,6 +1,7 @@
 import os
 import argparse
 import filecmp
+import sys
 
 from uwalk import uwalk
 
@@ -47,21 +48,10 @@ def main(args):
                         found[criteria] = os.path.join(dirpath, name)
 
 
-
 description = """
 Search provided directories looking for dupes. Match first on size, confirm with
 a full file comparison. Prompt user to choose one file or the other.
 """
-
-
-def add_arguments(parser):
-    parser.add_argument('--d', required=True, action="append", help="directory where to look for dupes")
-    parser.add_argument('--dryrun', action='store_true', help="go through the motions but don't delete anything")
-    parser.add_argument('--force', action='store_true', help="if not a dry run don't prompt")
-    parser.add_argument('-n', '--dont_explore_names', action='append', help='directory names not to explore e.g. .git', default=[])
-    parser.add_argument('-p', '--dont_explore_paths', action='append', help='directory paths not to explore e.g. .git', default=[])
-    parser.add_argument('-i', '--ignore_zero_size', action='store_true', help='ignore any file with zero size')
-    parser.add_argument('-s', '--start_at', help="a directory where to start looking, if not found no files will be processed (n.b --dont_explore_paths)", default=None)
 
 
 def call(source, arguments):
@@ -78,6 +68,5 @@ def call(source, arguments):
 
 
 if __name__ == "__main__":
-    import sys
     print(sys.argv)
     call(sys.argv[0], sys.argv[1:])
