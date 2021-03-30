@@ -7,13 +7,13 @@ from uwalk import uwalk
 
 def main(args):
     
-    if not args.dryrun and not force:
+    if not args.dryrun and not args.force:
         user_continue = input("WARNING this is not a dry run. Any dupes found will be deleted. Enter '1' to quit now.")
         if user_continue == '1':
             exit()
     else:
         print("DRY RUN")
-        
+
     found = {}
 
     for path in args.d:
@@ -47,8 +47,7 @@ def main(args):
                         found[criteria] = os.path.join(dirpath, name)
 
 
-if __name__ == "__main__":
-    
+def call(arguments=None):
     description = """
     Search provided directories looking for dupes. Match first on size, confirm with
     a full file comparison. Prompt user to choose one file or the other.
@@ -61,6 +60,10 @@ if __name__ == "__main__":
     parser.add_argument('-p', '--dont_explore_paths', action='append', help='directory paths not to explore e.g. .git', default=[])
     parser.add_argument('-i', '--ignore_zero_size', action='store_true', help='ignore any file with zero size')
     parser.add_argument('-s', '--start_at', help="a directory where to start looking, if not found no files will be processed (n.b --dont_explore_paths)", default=None)
-    args = parser.parse_args()
+    args = parser.parse_args(arguments) if arguments else parser.parse_args()
 
     main(args)
+
+
+if __name__ == "__main__":
+    call()
