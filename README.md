@@ -1,6 +1,7 @@
 # General Information
 
 - a collection of scripts for finding and deleting duplicate files
+- amalgamated under a parent script `fd.py` which can be called with subcommands
 - not production ready - use with caution
 - developed with Python 3.8.5
     - on Ubuntu WSL2 with pyenv, pyenv-virtualenv
@@ -14,8 +15,20 @@ Download the entire directory. Run any script similarly to the command below:
 python <path to location>/finddupes.py -h
 ```
 
+or
 
-# Which file should I use?
+```
+python <path to location>/fd.py subcommand -h
+```
+
+`fd.py` is compatible with `pyinstaller`. To build a binary:
+
+```
+pyinstaller fd.py --onefile
+```
+
+
+# Which file/sub-command should I use?
 
 
 ## I only want information. I do not want to delete any files.
